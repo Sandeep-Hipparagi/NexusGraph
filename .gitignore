@@ -18,3 +18,4 @@ falkordb_data/
 *.log
 .DS_Store
 *.tmp
+demo_assets/raw_video/

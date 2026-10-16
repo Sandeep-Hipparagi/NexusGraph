@@ -13,6 +13,14 @@
 
 ---
 
+### 🎥 Production-Grade 1080p Demo Video Walkthrough
+[![NexusGraph Live Mission Control Demo](demo_assets/nexusgraph_demo_preview.gif)](NexusGraph_Demo_Video_1080p.mp4)
+
+* 🎬 **Full HD 1080p Video File:** [`NexusGraph_Demo_Video_1080p.mp4`](NexusGraph_Demo_Video_1080p.mp4) *(Full HD, 2m 15s synchronized neural narration & live Swarm execution)*
+* 🎙️ **Automated Generator:** Generated natively using [`scripts/generate_demo_video.py`](scripts/generate_demo_video.py) with Playwright, Edge-TTS, and FFmpeg.
+
+---
+
 ## 1. Problem & Why Graphs (Beyond Vector RAG)
 
 When production systems fail at 3:00 AM, traditional AI agents relying on standard Vector RAG fail in three distinct ways:
