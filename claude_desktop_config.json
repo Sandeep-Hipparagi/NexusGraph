@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "nexusgraph": {
+      "command": "python",
+      "args": [
+        "-m",
+        "backend.mcp_server.falkor_mcp"
+      ],
+      "env": {
+        "FALKORDB_HOST": "localhost",
+        "FALKORDB_PORT": "6379",
+        "DEFAULT_TENANT_ID": "acme_corp"
+      }
+    }
+  }
+}

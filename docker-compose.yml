@@ -1,0 +1,52 @@
+services:
+  falkordb:
+    image: falkordb/falkordb:latest
+    container_name: nexus_falkordb
+    ports:
+      - "6379:6379"
+      - "3000:3000"
+    volumes:
+      - falkordb_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  nexus-backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: nexus_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - FALKORDB_HOST=falkordb
+      - FALKORDB_PORT=6379
+      - APP_ENV=production
+      - DEFAULT_TENANT_ID=acme_corp
+      - LLM_API_KEY=${LLM_API_KEY:-}
+      - LLM_BASE_URL=${LLM_BASE_URL:-}
+      - LLM_MODEL=${LLM_MODEL:-gpt-4o}
+    depends_on:
+      falkordb:
+        condition: service_healthy
+    restart: unless-stopped
+
+  nexus-frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: nexus_frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_BACKEND_URL=http://nexus-backend:8000
+    depends_on:
+      - nexus-backend
+    restart: unless-stopped
+
+volumes:
+  falkordb_data:
+    driver: local
