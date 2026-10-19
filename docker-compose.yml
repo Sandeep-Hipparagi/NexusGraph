@@ -4,7 +4,7 @@ services:
     container_name: nexus_falkordb
     ports:
       - "6379:6379"
-      - "3000:3000"
+      - "${FALKORDB_BROWSER_PORT:-3001}:3000"
     volumes:
       - falkordb_data:/data
     restart: unless-stopped
