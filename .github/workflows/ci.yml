@@ -12,7 +12,9 @@ jobs:
 
     services:
       falkordb:
-        image: falkordb/falkordb:latest
+        # Pinned by digest to FalkorDB 4.22.1 — :latest drifted and broke the
+        # variable-length-path recall Cypher used by the memory tools.
+        image: falkordb/falkordb@sha256:b0bdcac2cbaff989e77cb0610439b7a9289e86de033ccbbd4368b66fb680ae7a
         ports:
           - 6379:6379
         options: >-
