@@ -26,10 +26,12 @@ app = FastAPI(
 )
 
 # Enable CORS for frontend visualizers (React / Next.js / Vite on port 3000, 5173, etc.)
+# Credential-bearing requests against a wildcard origin are rejected by browsers and
+# enable CSRF-style abuse; this demo API is stateless, so cookie credentials stay off.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )

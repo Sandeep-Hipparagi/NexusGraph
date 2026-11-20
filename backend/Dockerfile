@@ -19,6 +19,10 @@ ENV PYTHONPATH=/app
 ENV FALKORDB_HOST=falkordb
 ENV FALKORDB_PORT=6379
 
+# Run as an unprivileged user
+RUN useradd --uid 1000 --create-home nexususer && chown -R nexususer:nexususer /app
+USER nexususer
+
 EXPOSE 8000
 
 # Startup script: auto-seed graph on startup then start FastAPI
