@@ -1,5 +1,6 @@
 """FalkorDB Client & Multi-Tenant Graph Manager for NexusGraph."""
 
+import re
 import time
 from typing import Any, Dict, List, Optional, Tuple, Union
 from falkordb import FalkorDB, Graph, Node, Edge, Path, QueryResult
@@ -54,11 +55,22 @@ class FalkorDBManager:
             username=self.username,
         )
 
+    # Tenant IDs become graph names; restricting them to safe identifier
+    # characters prevents arbitrary graph-name creation and keeps the
+    # nexus_ prefixing scheme deterministic.
+    _TENANT_PATTERN = re.compile(r"^[A-Za-z0-9_]{1,64}$")
+
+    @classmethod
+    def graph_name_for(cls, tenant_id: str) -> str:
+        """Validate a tenant identifier and return its isolated graph name."""
+        clean_tenant = str(tenant_id).strip() if tenant_id and str(tenant_id).strip() else "default"
+        if not cls._TENANT_PATTERN.match(clean_tenant):
+            raise ValueError(f"Invalid tenant identifier: {clean_tenant!r}")
+        return f"nexus_{clean_tenant}" if not clean_tenant.startswith("nexus_") else clean_tenant
+
     def get_graph(self, tenant_id: str) -> Graph:
         """Select an isolated graph for the specified tenant."""
-        clean_tenant = str(tenant_id).strip() if tenant_id and str(tenant_id).strip() else "default"
-        graph_name = f"nexus_{clean_tenant}" if not clean_tenant.startswith("nexus_") else clean_tenant
-        return self.db.select_graph(graph_name)
+        return self.db.select_graph(self.graph_name_for(tenant_id))
 
     def ping(self) -> bool:
         """Verify connectivity to FalkorDB."""
@@ -83,8 +95,20 @@ class FalkorDBManager:
         except Exception:
             pass
 
+    # Cypher identifiers are interpolated into CREATE INDEX (which has no
+    # parameterized form), so they are strictly validated before interpolation.
+    _IDENTIFIER_PATTERN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+
+    @classmethod
+    def _validate_identifier(cls, name: str, field: str) -> str:
+        if not cls._IDENTIFIER_PATTERN.match(name or ""):
+            raise ValueError(f"Invalid Cypher identifier for {field}: {name!r}")
+        return name
+
     def create_index(self, tenant_id: str, label: str, property_name: str) -> None:
         """Create an index on (label.property_name) idempotently."""
+        label = self._validate_identifier(label, "label")
+        property_name = self._validate_identifier(property_name, "property_name")
         graph = self.get_graph(tenant_id)
         try:
             graph.query(f"CREATE INDEX FOR (n:{label}) ON (n.{property_name})")
