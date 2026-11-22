@@ -1,5 +1,36 @@
+# NexusGraph
 
-## 🧩 Models & Adapters (Hugging Face)
+**Multi-agent incident intelligence on a connected graph brain: deterministic tenant isolation, Cypher-level execution traces, and MCP tooling on FalkorDB.**
+
+[![CI](https://github.com/Sandeep-Hipparagi/NexusGraph/actions/workflows/ci.yml/badge.svg)](https://github.com/Sandeep-Hipparagi/NexusGraph/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)](backend/requirements.txt)
+
+NexusGraph turns incident triage into a **deterministic graph operation**: a multi-agent swarm (SRE triage, memory coordination, company brain) queries per-tenant FalkorDB graphs with PageRank and shortest-path algorithms, persists every handoff as episodic memory, and exposes the whole loop as MCP tools with explainable subgraph traces for every answer.
+
+## Quickstart (3 commands)
+
+```bash
+docker compose up -d falkordb          # start the graph engine
+pip install -r backend/requirements.txt pytest httpx
+FALKORDB_HOST=localhost FALKORDB_PORT=6379 pytest backend/tests
+```
+
+## Security & verification posture
+
+- **38/38 tests green**: DB-free unit tests, live-FalkorDB integration tests (API, MCP tools, multi-tenant isolation, memory workflows), and security regression tests.
+- **CI on a digest-pinned FalkorDB image** — the integration tier cannot silently drift with `:latest`.
+- **Injection-hardened**: tenant identifiers and Cypher index identifiers are strictly validated (`DETACH DELETE` payloads are provably neutralized); all tool queries are parameterized.
+- **Non-root containers** for backend and frontend; frontend builds with deterministic `npm ci`.
+- CORS runs credential-free; zero secrets in the tree.
+
+## Ecosystem
+
+NexusGraph's graph-memory contract is exercised by the portfolio's unified evaluation harness — see [`agent-benchmark-suite`](https://github.com/Sandeep-Hipparagi/agent-benchmark-suite).
+
+---
+
+## Models & Adapters (Hugging Face)
 
 NexusGraph can be used with local or cloud LLM backends to produce explainable traversal-aware responses. The following Hugging Face model releases and adapters are compatible with our inference pipelines and served as GGUF / adapter artifacts for low-latency inference.
 
