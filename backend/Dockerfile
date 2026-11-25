@@ -8,11 +8,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install python dependencies
-COPY requirements.txt /app/requirements.txt
+COPY backend/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Copy source code
-COPY . /app
+COPY backend /app/backend
+COPY .env.example /app/.env
 
 ENV PYTHONPATH=/app
 ENV FALKORDB_HOST=falkordb
