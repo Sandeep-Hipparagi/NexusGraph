@@ -8,6 +8,14 @@
 
 NexusGraph turns incident triage into a **deterministic graph operation**: a multi-agent swarm (SRE triage, memory coordination, company brain) queries per-tenant FalkorDB graphs with PageRank and shortest-path algorithms, persists every handoff as episodic memory, and exposes the whole loop as MCP tools with explainable subgraph traces for every answer.
 
+## Product Walkthrough & Architecture Demo
+
+https://github.com/Sandeep-Hipparagi/NexusGraph/releases/download/media-v1/brag.mp4
+
+[![NexusGraph demo](assets/media/preview.webp)](https://github.com/Sandeep-Hipparagi/NexusGraph/releases/tag/media-v1)
+
+---
+
 ## Quickstart (3 commands)
 
 ```bash
